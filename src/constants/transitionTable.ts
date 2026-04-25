@@ -1,13 +1,5 @@
 import { TOKENS } from "./tokens";
-
-/**
- * DFS States
- */
-export enum DFSState {
-  BEGIN,
-  IDENTIFIER,
-  END
-};
+import { DFSState } from "./dfs"; // todo: add dfsstate to the transition table itself
 
 /**
  * Transition table for the lexer. This is a 2D table that maps the current state and the input token to the next state.
@@ -18,7 +10,7 @@ type TransitionTable = Record<TOKENS, Record<TOKENS, TOKENS>>;
 /**
  * The actual transition table. This is a simple example and can be expanded to include more states and transitions as needed.
  */
-// TODO: Refactor this transition table to a nested hashtable, from the DFS State you should get a hashtable based on the symbol, based on the symbol change the DFS.
+// TODO: Refactor this transition table to a nested hashtable, from the DFS State you should get a hashtable based on the symbol, and based on that change the DFS State.
 export const transitionTable: TransitionTable = {
   [TOKENS.IDENTIFIER]: {
     [TOKENS.IDENTIFIER]: TOKENS.IDENTIFIER,
