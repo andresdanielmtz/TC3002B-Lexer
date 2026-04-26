@@ -28,6 +28,8 @@ export const matchToken = (sourceInput: string, line: number, column: number): T
       outputToken.type = TOKEN_TYPE.OPERATOR;
       break;
     // todo: add more cases for other token types (e.g., NUMBER, STRING, PUNCTUATION, COMMENT, WHITESPACE)
+
+    // ?? By default, we should assume the token is an IDENTIFIER.
     default:
       outputToken.type = TOKEN_TYPE.IDENTIFIER;
   }
