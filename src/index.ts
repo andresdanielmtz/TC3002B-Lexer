@@ -24,6 +24,10 @@ const main = () => {
             const word = match[0];
             const column = match.index + 1;
             const token = matchToken(word, line, column);
+            if (token.type === TOKEN_TYPE.IDENTIFIER) {
+                console.warn(`Warning: Unrecognized token "${word}" at line ${line}, column ${column}. Defaulting to IDENTIFIER.`);
+                // todo: add automatas to detect if its another token type (e.g., NUMBER, STRING, PUNCTUATION, COMMENT, WHITESPACE) instead of defaulting to IDENTIFIER.
+            }
             tokenList.push(token);
         }
     }
