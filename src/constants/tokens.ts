@@ -10,14 +10,15 @@ enum TOKEN_TYPE {
     PUNCTUATION = "PUNCTUATION",
     COMMENT = "COMMENT",
     WHITESPACE = "WHITESPACE",
-    EOF = "EOF"   
+    EOF = "EOF"
 }
 
-interface Token { 
+interface Token {
     type: TOKEN_TYPE;
     value: string;
     line: number;
     column: number;
 }
 
-export { TOKEN_TYPE, type Token };
+export { TOKEN_TYPE };
+export type { Token };
