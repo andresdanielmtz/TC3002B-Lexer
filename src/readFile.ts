@@ -2,6 +2,17 @@ import * as fs from "fs";
 import * as path from "path";
 import { TOKEN_TYPE, Token } from "./constants/tokens";
 import { KEYWORD_REGEX_EXP, OPERATOR_REGEX_EXP } from "./constants/regex";
+import { conditionals } from "./constants/automata";
+
+/**
+ * This method checks if a given word is a conditional keyword
+ * @param word The input word.
+ * @returns A boolean indicating whether the word is a conditional keyword or not.
+ */
+export const isWordAConditional = (word: string): boolean => {
+  return conditionals.includes(word);
+}
+
 /**
  * Read and return the parse source code.
  * It will be a string containining the entirety of the source code, incluiding whitespaces and comments, as they are needed for the lexer to generate the correct tokens.

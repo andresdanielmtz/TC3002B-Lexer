@@ -1,5 +1,5 @@
 import { Token, TOKEN_TYPE } from "./constants/tokens";
-import { readTritonFile, matchToken } from "./readFile";
+import { readTritonFile, matchToken, isWordAConditional } from "./readFile";
 
 /**
  * Entry point
@@ -23,12 +23,21 @@ const main = () => {
         while ((match = wordRegex.exec(lineText)) !== null) {
             const word = match[0];
             const column = match.index + 1;
-            const token = matchToken(word, line, column);
-            if (token.type === TOKEN_TYPE.IDENTIFIER) {
-                console.warn(`Warning: Unrecognized token "${word}" at line ${line}, column ${column}. Defaulting to IDENTIFIER.`);
-                // todo: add automatas to detect if its another token type (e.g., NUMBER, STRING, PUNCTUATION, COMMENT, WHITESPACE) instead of defaulting to IDENTIFIER.
+
+            if (isWordAConditional(word)) {
+                console.log(
+                    `Found conditional "${word}" at line ${line}, column ${column}.`,
+                );
+            } else {
+                const token = matchToken(word, line, column);
+                if (token.type === TOKEN_TYPE.IDENTIFIER) {
+                    console.warn(
+                        `Warning: Unrecognized token "${word}" at line ${line}, column ${column}. Defaulting to IDENTIFIER.`,
+                    );
+                    // todo: add automatas to detect if its another token type (e.g., NUMBER, STRING, PUNCTUATION, COMMENT, WHITESPACE) instead of defaulting to IDENTIFIER.
+                }
+                tokenList.push(token);
             }
-            tokenList.push(token);
         }
     }
 
