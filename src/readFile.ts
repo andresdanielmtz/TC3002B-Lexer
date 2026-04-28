@@ -2,7 +2,7 @@ import * as fs from "fs";
 import * as path from "path";
 import { TOKEN_TYPE, Token } from "./constants/tokens";
 import { KEYWORD_REGEX_EXP, OPERATOR_REGEX_EXP } from "./constants/regex";
-import { conditionals } from "./constants/automata";
+import { conditionals, loops } from "./constants/automata";
 
 /**
  * This method checks if a given word is a conditional keyword
@@ -11,6 +11,15 @@ import { conditionals } from "./constants/automata";
  */
 export const isWordAConditional = (word: string): boolean => {
   return conditionals.includes(word);
+}
+
+/**
+ * This method checks if a given word is a loop keyword
+ * @param word The input word.
+ * @returns A boolean indicating whether the word is a loop keyword or not.
+ */
+export const isWordALoop = (word: string): boolean => {
+  return loops.includes(word);
 }
 
 /**

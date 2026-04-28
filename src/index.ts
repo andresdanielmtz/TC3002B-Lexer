@@ -1,5 +1,5 @@
 import { Token, TOKEN_TYPE } from "./constants/tokens";
-import { readTritonFile, matchToken, isWordAConditional } from "./readFile";
+import { readTritonFile, matchToken, isWordAConditional, isWordALoop } from "./readFile";
 
 /**
  * Entry point
@@ -24,19 +24,33 @@ const main = () => {
             const word = match[0];
             const column = match.index + 1;
 
-            if (isWordAConditional(word)) {
-                console.log(
-                    `Found conditional "${word}" at line ${line}, column ${column}.`,
-                );
-            } else {
-                const token = matchToken(word, line, column);
-                if (token.type === TOKEN_TYPE.IDENTIFIER) {
-                    console.warn(
-                        `Warning: Unrecognized token "${word}" at line ${line}, column ${column}. Defaulting to IDENTIFIER.`,
+            /**
+             * Check for conditionals and loops first.
+             */
+            switch (true) {
+                case isWordAConditional(word):
+                    console.log(
+                        `Found conditional "${word}" at line ${line}, column ${column}.`,
                     );
-                    // todo: add automatas to detect if its another token type (e.g., NUMBER, STRING, PUNCTUATION, COMMENT, WHITESPACE) instead of defaulting to IDENTIFIER.
+                    break;
+
+                case isWordALoop(word):
+                    console.log(
+                        `Found loop "${word}" at line ${line}, column ${column}.`,
+                    );
+                    break;
+
+                default: {
+                    const token = matchToken(word, line, column);
+                    if (token.type === TOKEN_TYPE.IDENTIFIER) {
+                        console.warn(
+                            `Warning: Unrecognized token "${word}" at line ${line}, column ${column}. Defaulting to IDENTIFIER.`,
+                        );
+                        // todo: add automatas to detect if its another token type (e.g., NUMBER, STRING, PUNCTUATION, COMMENT, WHITESPACE) instead of defaulting to IDENTIFIER.
+                    }
+                    tokenList.push(token);
+                    break;
                 }
-                tokenList.push(token);
             }
         }
     }
