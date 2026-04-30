@@ -1,5 +1,5 @@
-import { Token, TOKEN_TYPE } from "./constants/tokens";
-import { readTritonFile, matchToken } from "./readFile";
+import { Token } from "./constants/tokens";
+import { readTritonFile, tokenizeLine } from "./readFile";
 
 /**
  * Entry point
@@ -16,16 +16,7 @@ const main = () => {
     for (let lineIndex = 0; lineIndex < lines.length; lineIndex++) {
         const lineText = lines[lineIndex] ?? "";
         const line = lineIndex + 1;
-        const wordRegex = /\S+/g;
-        let match: RegExpExecArray | null;
-
-        // Use regex to find words in the line and match them to token types
-        while ((match = wordRegex.exec(lineText)) !== null) {
-            const word = match[0];
-            const column = match.index + 1;
-            const token = matchToken(word, line, column);
-            tokenList.push(token);
-        }
+        tokenList.push(...tokenizeLine(lineText, line));
     }
 
     console.log(tokenList);
