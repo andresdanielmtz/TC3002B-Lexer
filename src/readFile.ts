@@ -2,6 +2,7 @@ import * as fs from "fs";
 import * as path from "path";
 import { TOKEN_TYPE, Token } from "./constants/tokens";
 import { KEYWORD_REGEX_EXP, OPERATOR_REGEX_EXP } from "./constants/regex";
+import { matchTransitionTableToken } from "./constants/transitionTable";
 /**
  * Read and return the parse source code.
  * It will be a string containining the entirety of the source code, incluiding whitespaces and comments, as they are needed for the lexer to generate the correct tokens.
@@ -19,8 +20,12 @@ export const readTritonFile = (fileName: string): string => {
  */
 export const matchToken = (sourceInput: string, line: number, column: number): Token => {
   const outputToken: Token = { type: TOKEN_TYPE.IDENTIFIER, value: sourceInput, line: line, column: column };
+  const transitionTableTokenType = matchTransitionTableToken(sourceInput);
   
   switch (true) {
+    case transitionTableTokenType !== undefined:
+      outputToken.type = transitionTableTokenType;
+      break;
     case KEYWORD_REGEX_EXP.test(sourceInput):
       outputToken.type = TOKEN_TYPE.KEYWORD;
       break;
