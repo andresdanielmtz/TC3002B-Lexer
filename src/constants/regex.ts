@@ -1,5 +1,5 @@
 /**
- * Regex patterns for Python keywords and operators.
+ * Regex patterns for Python keywords, operators, delimiters, and indentation.
  */
 
 // Comparison operators
@@ -33,7 +33,7 @@ export const DIVEQ = /\/=/;
  * - >  (GT)
  * - =  (ASSIGN)
  */
-export const OPERATOR_REGEX_EXP = /<=|>=|==|!=|\+=|-=|\*=|\/=|<|>|=/;
+export const OPERATOR_REGEX_EXP = /^(?:<=|>=|==|!=|\+=|-=|\*=|\/=|<|>|=)$/;
 
 /**
  * Combined operator regex patterns for easier access.
@@ -68,6 +68,127 @@ export const operatorList = [
   { name: "MINUSEQ", pattern: MINUSEQ },
   { name: "TIMESEQ", pattern: TIMESEQ },
   { name: "DIVEQ", pattern: DIVEQ },
+];
+
+// Parentheses
+export const LPAREN = /\(/;
+export const RPAREN = /\)/;
+
+// Brackets
+export const LBRACKET = /\[/;
+export const RBRACKET = /\]/;
+
+// Braces
+export const LBRACE = /\{/;
+export const RBRACE = /\}/;
+
+// Punctuation delimiters
+export const COMMA = /,/;
+export const COLON = /:/;
+export const DOT = /\./;
+export const AT = /@/;
+export const ARROW = /->/;
+
+// Bitwise and symbolic delimiters
+export const TILDE = /~/;
+export const AMPERSAND = /&/;
+export const PIPE = /\|/;
+export const CARET = /\^/;
+export const LSHIFT = /<</;
+export const RSHIFT = />>/;
+
+/**
+ * Single regex expression for every supported delimiter.
+ *
+ * Detected delimiters:
+ * - -> (ARROW)
+ * - << (LSHIFT)
+ * - >> (RSHIFT)
+ * - (  (LPAREN)
+ * - )  (RPAREN)
+ * - [  (LBRACKET)
+ * - ]  (RBRACKET)
+ * - {  (LBRACE)
+ * - }  (RBRACE)
+ * - ,  (COMMA)
+ * - :  (COLON)
+ * - .  (DOT)
+ * - @  (AT)
+ * - ~  (TILDE)
+ * - &  (AMPERSAND)
+ * - |  (PIPE)
+ * - ^  (CARET)
+ */
+export const DELIMITER_REGEX_EXP = /^(?:->|<<|>>|\(|\)|\[|\]|\{|\}|,|:|\.|@|~|&|\||\^)$/;
+
+/**
+ * Combined delimiter regex patterns for easier access.
+ */
+export const delimiters = {
+  DELIMITER: DELIMITER_REGEX_EXP,
+  LPAREN,
+  RPAREN,
+  LBRACKET,
+  RBRACKET,
+  LBRACE,
+  RBRACE,
+  COMMA,
+  COLON,
+  DOT,
+  AT,
+  ARROW,
+  TILDE,
+  AMPERSAND,
+  PIPE,
+  CARET,
+  LSHIFT,
+  RSHIFT,
+};
+
+/**
+ * Array of delimiter patterns with their names for iteration.
+ */
+export const delimiterList = [
+  { name: "ARROW", pattern: ARROW },
+  { name: "LSHIFT", pattern: LSHIFT },
+  { name: "RSHIFT", pattern: RSHIFT },
+  { name: "LPAREN", pattern: LPAREN },
+  { name: "RPAREN", pattern: RPAREN },
+  { name: "LBRACKET", pattern: LBRACKET },
+  { name: "RBRACKET", pattern: RBRACKET },
+  { name: "LBRACE", pattern: LBRACE },
+  { name: "RBRACE", pattern: RBRACE },
+  { name: "COMMA", pattern: COMMA },
+  { name: "COLON", pattern: COLON },
+  { name: "DOT", pattern: DOT },
+  { name: "AT", pattern: AT },
+  { name: "TILDE", pattern: TILDE },
+  { name: "AMPERSAND", pattern: AMPERSAND },
+  { name: "PIPE", pattern: PIPE },
+  { name: "CARET", pattern: CARET },
+];
+
+// Indentation
+export const NEWLINE = /^(?:\r?\n)$/;
+export const INDENT = /^[ \t]+/;
+export const DEDENT = /(?<![\s\S])/;
+
+/**
+ * Combined indentation regex patterns for easier access.
+ */
+export const indentation = {
+  NEWLINE,
+  INDENT,
+  DEDENT,
+};
+
+/**
+ * Array of indentation patterns with their names for iteration.
+ */
+export const indentationList = [
+  { name: "NEWLINE", pattern: NEWLINE },
+  { name: "INDENT", pattern: INDENT },
+  { name: "DEDENT", pattern: DEDENT },
 ];
 
 // Function definition
@@ -128,7 +249,7 @@ export const CONTINUE = /\bcontinue\b/;
  * - continue (CONTINUE)
  */
 export const KEYWORD_REGEX_EXP =
-  /\b(def|return|if|else|elif|for|while|in|is|and|or|not|True|False|None|pass|break|continue)\b/;
+  /^(?:def|return|if|else|elif|for|while|in|is|and|or|not|True|False|None|pass|break|continue)$/;
 
 /**
  * Combined keyword regex patterns for easier access.
@@ -177,4 +298,21 @@ export const keywordList = [
   { name: "PASS", pattern: PASS },
   { name: "BREAK", pattern: BREAK },
   { name: "CONTINUE", pattern: CONTINUE },
+];
+
+/**
+ * Global combined exports for every regex pattern group.
+ */
+export const allPatterns = {
+  ...operators,
+  ...delimiters,
+  ...indentation,
+  ...keywords,
+};
+
+export const allPatternList = [
+  ...operatorList,
+  ...delimiterList,
+  ...indentationList,
+  ...keywordList,
 ];

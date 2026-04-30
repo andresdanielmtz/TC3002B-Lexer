@@ -1,11 +1,11 @@
 import * as fs from "fs";
 import * as path from "path";
 import { TOKEN_TYPE, Token } from "./constants/tokens";
-import { KEYWORD_REGEX_EXP, OPERATOR_REGEX_EXP } from "./constants/regex";
+import { DELIMITER_REGEX_EXP, KEYWORD_REGEX_EXP, NEWLINE, OPERATOR_REGEX_EXP } from "./constants/regex";
 import { matchTransitionTableToken } from "./constants/transitionTable";
 
-const TWO_CHARACTER_OPERATORS = new Set(["//", "**", "<=", ">=", "==", "!=", "+=", "-=", "*=", "/="]);
-const SINGLE_CHARACTER_TOKENS = new Set(["+", "-", "*", "/", "%", "<", ">", "=", "(", ")", "[", "]", "{", "}", ",", ":", ".", "@", "#"]);
+const TWO_CHARACTER_TOKENS = new Set(["//", "**", "<=", ">=", "==", "!=", "+=", "-=", "*=", "/=", "->", "<<", ">>"]);
+const SINGLE_CHARACTER_TOKENS = new Set(["+", "-", "*", "/", "%", "<", ">", "=", "(", ")", "[", "]", "{", "}", ",", ":", ".", "@", "#", "~", "&", "|", "^"]);
 
 const isWhitespace = (character: string): boolean => /\s/.test(character);
 const isDigit = (character: string): boolean => /^\d$/.test(character);
@@ -98,14 +98,14 @@ const readIdentifier = (lineText: string, startIndex: number): string => {
  */
 const readNextLexeme = (lineText: string, startIndex: number): string => {
   const character = lineText[startIndex] ?? "";
-  const twoCharacterOperator = lineText.slice(startIndex, startIndex + 2);
+  const twoCharacterToken = lineText.slice(startIndex, startIndex + 2);
 
   if (character === '"' || character === "'") {
     return readString(lineText, startIndex);
   }
 
-  if (TWO_CHARACTER_OPERATORS.has(twoCharacterOperator)) {
-    return twoCharacterOperator;
+  if (TWO_CHARACTER_TOKENS.has(twoCharacterToken)) {
+    return twoCharacterToken;
   }
 
   if (SINGLE_CHARACTER_TOKENS.has(character)) {
@@ -151,6 +151,34 @@ export const tokenizeLine = (lineText: string, line: number): Token[] => {
 };
 
 /**
+ * Tokenizes source code while preserving newline tokens between source lines.
+ * @param sourceCode The full source code text to tokenize.
+ * @returns A list of tokens found in the source code.
+ */
+export const tokenizeSource = (sourceCode: string): Token[] => {
+  const tokens: Token[] = [];
+  const newlineRegex = /\r?\n/g;
+  let lineStartIndex = 0;
+  let line = 1;
+  let newlineMatch: RegExpExecArray | null;
+
+  while ((newlineMatch = newlineRegex.exec(sourceCode)) !== null) {
+    const lineText = sourceCode.slice(lineStartIndex, newlineMatch.index);
+    tokens.push(...tokenizeLine(lineText, line));
+    tokens.push({ type: TOKEN_TYPE.NEWLINE, value: newlineMatch[0], line, column: lineText.length + 1 });
+
+    line++;
+    lineStartIndex = newlineMatch.index + newlineMatch[0].length;
+  }
+
+  if (lineStartIndex < sourceCode.length) {
+    tokens.push(...tokenizeLine(sourceCode.slice(lineStartIndex), line));
+  }
+
+  return tokens;
+};
+
+/**
  * This method takes a string of source code and matches it against the defined token patterns to determine its token type using Regex.
  * @param sourceInput The string of source code to be matched against token patterns.
  * @returns The token type that matches the input source code string. If no match is found, it defaults to TOKEN_TYPE.IDENTIFIER.
@@ -168,6 +196,12 @@ export const matchToken = (sourceInput: string, line: number, column: number): T
       break;
     case OPERATOR_REGEX_EXP.test(sourceInput):
       outputToken.type = TOKEN_TYPE.OPERATOR;
+      break;
+    case DELIMITER_REGEX_EXP.test(sourceInput):
+      outputToken.type = TOKEN_TYPE.DELIMITER;
+      break;
+    case NEWLINE.test(sourceInput):
+      outputToken.type = TOKEN_TYPE.NEWLINE;
       break;
     // todo: add more cases for other token types (e.g., NUMBER, STRING, PUNCTUATION, COMMENT, WHITESPACE)
     default:

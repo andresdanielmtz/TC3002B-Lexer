@@ -1,25 +1,26 @@
-import { Token } from "./constants/tokens";
-import { readTritonFile, tokenizeLine } from "./readFile";
+import * as fs from "fs";
+import * as path from "path";
+import { readTritonFile, tokenizeSource } from "./readFile";
+
+const OUTPUT_DIRECTORY = path.resolve(__dirname, "../output");
+const OUTPUT_FILE = path.join(OUTPUT_DIRECTORY, "tokens.json");
+const WRITE_OUTPUT_TOKENS = process.argv.includes("--tokens");
 
 /**
  * Entry point
  */
 const main = () => {
-    const tokenList: Token[] = [];
-
     const sourceCode = readTritonFile("triton"); // triton.py
-    console.log(sourceCode);
+    const tokenList = tokenizeSource(sourceCode);
 
-    const lines = sourceCode.split(/\r?\n/);
-
-    // Go through each line of the source code.
-    for (let lineIndex = 0; lineIndex < lines.length; lineIndex++) {
-        const lineText = lines[lineIndex] ?? "";
-        const line = lineIndex + 1;
-        tokenList.push(...tokenizeLine(lineText, line));
+    if (WRITE_OUTPUT_TOKENS) {
+        fs.mkdirSync(OUTPUT_DIRECTORY, { recursive: true });
+        fs.writeFileSync(OUTPUT_FILE, JSON.stringify(tokenList, null, 2));
+        console.log(`Tokens written to ${OUTPUT_FILE}`);
+    } else {
+        console.log(sourceCode);
+        console.log(tokenList);
     }
-
-    console.log(tokenList);
 };
 
 main();
