@@ -30,7 +30,7 @@ export const readTritonFile = (fileName: string): string => {
  */
 const readString = (lineText: string, startIndex: number): string => {
   const quote = lineText[startIndex];
-  let currentIndex = startIndex + 1;
+  let currentIndex = startIndex + 1; // Start after the opening quote
 
   while (currentIndex < lineText.length) {
     const character = lineText[currentIndex];
@@ -59,10 +59,12 @@ const readString = (lineText: string, startIndex: number): string => {
 const readNumber = (lineText: string, startIndex: number): string => {
   let currentIndex = startIndex;
 
+  // Read the integer part of the number
   while (currentIndex < lineText.length && isDigit(lineText[currentIndex] ?? "")) {
     currentIndex++;
   }
 
+  // Check for a decimal point followed by more digits to read the fractional part
   if (lineText[currentIndex] === "." && isDigit(lineText[currentIndex + 1] ?? "")) {
     currentIndex++;
 
