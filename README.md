@@ -37,10 +37,10 @@ See `/input` for sample Triton files.
 
 ## Github Workflow
 
-Right now, the current github workflow only checks for whether or not the project compiles, so you can use the following command to check out if it works:
+The GitHub workflow runs the test suite on pushes and pull requests to `main`, so you can use the following command locally to check that it passes:
 
 ```bash
-npm run build
+npm run test
 ```
 
 ## Tests
