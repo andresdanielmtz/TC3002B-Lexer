@@ -58,7 +58,7 @@ const NAME_AUTOMATON: Automaton = {
  */
 const NUMBER_AUTOMATON: Automaton = {
   name: "NUMBER",
-  tokenType: TOKEN_TYPE.IDENTIFIER,
+  tokenType: TOKEN_TYPE.NUMBER,
   startState: "START",
   acceptStates: ["NUMBER", "NUMBER_FRACTION"],
   transitions: {
@@ -74,7 +74,7 @@ const NUMBER_AUTOMATON: Automaton = {
  */
 const STRING_AUTOMATON: Automaton = {
   name: "STRING",
-  tokenType: TOKEN_TYPE.IDENTIFIER,
+  tokenType: TOKEN_TYPE.STRING,
   startState: "START",
   acceptStates: ["STRING_END"],
   transitions: {
